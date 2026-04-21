@@ -8,7 +8,7 @@ import datetime
 
 import os
 
-def train(train_data, val_data, epochs=100, learning_rate=0.0005, seed=42, batch_size=8, layer_sizes=[30, 16, 1], config_name="1"):
+def train(train_data, val_data, epochs=100, learning_rate=0.0005, seed=42, batch_size=8, layer_sizes=[30, 16, 8, 1], config_name="1"):
 	train_df = pd.read_csv(train_data)
 	val_df = pd.read_csv(val_data)
 
@@ -138,8 +138,6 @@ def train(train_data, val_data, epochs=100, learning_rate=0.0005, seed=42, batch
 
 		if (epoch + 1) % 10 == 0 or epoch == 0:
 			print(f"Epoch {epoch+1:3d}/{epochs} - Loss train: {avg_train_loss:.4f} | Loss val: {loss_val:.4f} | Acc train: {acc_train:.4f} | Acc val: {acc_val:.4f}")
-			
-
 
 	### Saving the model
 
@@ -149,14 +147,14 @@ def train(train_data, val_data, epochs=100, learning_rate=0.0005, seed=42, batch
 
 	return train_losses, val_losses, accuracy_train, accuracy_val
 
-def main():
+def train_model():
 	
-	parser = argparse.ArgumentParser(prog="train_model", description="Train a simple MLP on the breast cancer dataset")
+	parser = argparse.ArgumentParser(prog="train", description="Train a simple MLP on the breast cancer dataset")
 	parser.add_argument("-e", "--epochs", type=int, default=100, help="Number of training epochs")
 	parser.add_argument("-lr", "--learning_rate", type=float, default=0.0005, help="Learning rate for training")
 	parser.add_argument("-s", "--seed", type=int, default=42, help="Random seed for reproducibility")
 	parser.add_argument("-b", "--batch_size", type=int, default=8, help="Batch size for training")
-	parser.add_argument("-l", "--layers", type=int, nargs="+", default=[30, 16, 1], help="Sizes of each layer in the MLP (including input and output layers)")
+	parser.add_argument("-l", "--layers", type=int, nargs="+", default=[30, 16, 8, 1], help="Sizes of each layer in the MLP (including input and output layers)")
 	parser.add_argument("-t", "--train_data", type=str, default="breast_cancer_train.csv", help="Path to the training dataset (CSV file)")
 	parser.add_argument("-v", "--val_data", type=str, default="breast_cancer_val.csv", help="Path to the validation dataset (CSV file)")
 	args = parser.parse_args()
@@ -210,5 +208,6 @@ def main():
 	plt.savefig(f"learning_curves_accuracy_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.png")
 	print(f"Learning curves saved to 'learning_curves_accuracy_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.png'")
 
+
 if __name__ == "__main__":
-	main()
+	train_model()

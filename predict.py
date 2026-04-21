@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import sys
 from utils import sigmoid
-from utils import load_dataset
+from utils import load_dataset_splited
 
 def load_model(model_file):
 	try:
@@ -21,6 +21,15 @@ def predict(data_file, model_file):
 	if len(sys.argv) < 3:
 		print("Usage : python3 predict.py <data_file.csv> <model_file.npy>")
 		exit(1)
+
+	try:
+		load_dataset_splited(data_file)
+	except FileNotFoundError:
+		print("The dataset does not exist. Please provide valid dataset.")
+		return
+	except Exception as e:
+		print(f"Error loading dataset: {e}")
+		return
 
 	df = pd.read_csv(data_file)
 	X = df.drop(columns=["diagnosis"]).values
@@ -47,12 +56,13 @@ def predict(data_file, model_file):
 	print(f"Loss on the set : {loss:.4f}")
 	print(f"Accuracy on the set : {accuracy:.4f}")
 
+
 if __name__ == "__main__":
 	if len(sys.argv) < 3:
 		print("Usage : python3 predict.py <data_file.csv> <model_file.npy>")
 		exit(1)
-	elif not load_dataset(sys.argv[1]):
-		print("data_file.csv is not valid.")
+	elif not load_dataset_splited(sys.argv[1]):
+		print("The dataset is not shaped correctly. Please provide a valid dataset.")
 		exit(1)
 	elif not sys.argv[2].endswith(".npy"):
 		print("The model must be a .npy file.")

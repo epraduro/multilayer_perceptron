@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import sys
-from utils import load_dataset
+from utils import load_dataset_init
 
 def split_and_save(X, y, train_ratio=0.8, random_seed=42, train_file="train.csv", val_file="val.csv"):
     np.random.seed(random_seed)
@@ -44,10 +44,10 @@ def split_and_save(X, y, train_ratio=0.8, random_seed=42, train_file="train.csv"
     df_train.to_csv(train_file, index=False)
     df_val.to_csv(val_file, index=False)
     
-    print(f"Saved : {train_file:20} ({len(df_train):4d} lines)")
-    print(f"Saved : {val_file:20}   ({len(df_val):4d} lines)")
+    print(f"Saved : {train_file:20} ({len(df_train):4d} lines )")
+    print(f"Saved : {val_file:20}   ({len(df_val):4d} lines )")
     print("\nDistribution train :", y_train.value_counts(normalize=True).round(4))
-    print("Distribution val   :", y_val.value_counts(normalize=True).round(4))
+    print("\nDistribution val   :", y_val.value_counts(normalize=True).round(4))
     
     print("\nExample train :")
     print(df_train)
@@ -57,10 +57,13 @@ def split_and_save(X, y, train_ratio=0.8, random_seed=42, train_file="train.csv"
     return df_train, df_val
 
 
-if __name__ == "__main__":
+def split_data():
+    if len(sys.argv) != 2:
+        print("Usage: python3 split_data.py <path_to_data.csv>")
+        sys.exit(1)
 
     try:
-        load_dataset(sys.argv[1])
+        load_dataset_init(sys.argv[1])
         df = pd.read_csv(sys.argv[1], header=None)
     except FileNotFoundError:
         print("The file data.csv does not exist. Please provide a valid dataset.")
@@ -92,3 +95,5 @@ if __name__ == "__main__":
         val_file="breast_cancer_val.csv"
     )
 
+if __name__ == "__main__":
+    split_data()
